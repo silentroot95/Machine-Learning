@@ -51,16 +51,15 @@ def SMO(data,labels,C,tol,iter_max):
             Ei = fxi-labels[i]
             #print(fxi,Ei,Ei*labels[i])
             '''
-            KKT条件
-            alpha=0，边界之外
-            alpha=C，边界上
-            0<alpha<C，软间隔之内
+            xi为软间隔，对每个样本xi是变量，这里的tol和xi是一个意思，只不过tol被人为固定了
+            alpha=0，分类正确
+            alpha=C，xi<=1最大间隔内部但分类正确，xi>1分类错误
+            0<alpha<C，边界上，支持向量，分类正确
             '''
-            #这里的判断条件是选择违反KKT条件的alpha值进行优化，误差的绝对值大于tol是需要优化的对象，绝对值展开为两种情况
-            #fxi的值与alphai相关
-            #对于yi*fxi-1 <-tol，使yi*fxi-1>= -tol，需要增大alpha，当alpha<C时才有增大的空间
-            #对于yi*fxi-1 >tol，使yi*fxi-1<= tol，需要减小alpha，当alpha>0时采用减小的空间
-            if((labels[i]*Ei < -tol and alpha[i] < C) or (labels[i]*Ei > tol and alpha[i] >0)):
+            #这里的判断条件是选择违反KKT条件的alpha值进行优化
+            #对于yi*fxi-1 <-tol，即yi*fxi < 1-tol，此时分类错误，alpha应为C,alpha<C违反KKT条件
+            #对于yi*fxi-1 >-tol，使yi*fxi > 1-tol，此时分类正确，alpha应为0,alpha>0违反KKT条件
+            if((labels[i]*Ei < -tol and alpha[i] < C) or (labels[i]*Ei > -tol and alpha[i] >0)):
                 #随机选择一个不等于i的j
                 j = RandSelect(i,m)
                 #fxj
@@ -149,5 +148,5 @@ def Visualize(data,labels,alpha,b):
     plt.show()
 if __name__ == '__main__':
     data,labels = LoadData(filename)
-    b,alpha = SMO(data,labels,1,0.2,50)
+    b,alpha = SMO(data,labels,1,0.9,50)
     Visualize(data,labels,alpha,b)
