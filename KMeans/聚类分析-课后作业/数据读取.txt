@@ -1,0 +1,10 @@
+clc;clear all;close all;
+cd('C:\Users\chen\Desktop\聚类分析-课后作业\signal') %学生需要根据具体情况修改目录
+files=dir('*.txt');
+for(k=1:length(files))
+	filename=files(k).name;
+	[t,s]=textread(filename,'%f,%f','headerlines',12); %跳过文件头读入波形数据 
+	plot(t,s)
+	input('输入回车键查看下一个信号')
+	clc
+end
