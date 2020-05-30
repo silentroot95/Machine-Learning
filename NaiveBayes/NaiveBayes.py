@@ -43,7 +43,9 @@ def Train(train_mat,label_vec):
         train_mat:训练词向量组成的矩阵
         label_vec:类别向量
     Return:
-
+        p0_vec:非垃圾邮件，词向量条件概率
+        p1_vec:垃圾邮件，词向量条件概率
+        p_spam:垃圾邮件概率
     '''
     train_mat = np.array(train_mat)
     #邮件数
